@@ -2,20 +2,25 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
-
-  nix.settings.experimental-features = [
-      "nix-command"
-      "flakes"
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
   ];
 
-    system.activationScripts.createUserDirs.text = ''
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+
+  system.activationScripts.createUserDirs.text = ''
     mkdir -p /home/art/{Desktop,Documents,Downloads,Music,Pictures,Videos,Projects/{Ansible,Docker,Kubernetes,NixOS,Python,Rust},Git,Scripts,VM,Containers,ISO,Backups,Temp}
     chown -R art:users /home/art/{Desktop,Documents,Downloads,Music,Pictures,Videos,Projects/{Ansible,Docker,Kubernetes,NixOS,Python,Rust},Git,Scripts,VM,Containers,ISO,Backups,Temp} 
   '';
@@ -23,7 +28,6 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-
 
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
@@ -33,7 +37,7 @@
   services.gnome.core-apps.enable = false;
   services.gnome.core-developer-tools.enable = false;
   services.gnome.games.enable = false;
-  environment.gnome.excludePackages = with pkgs; [];
+  environment.gnome.excludePackages = with pkgs; [ ];
 
   # Use latest kernel.
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -61,10 +65,7 @@
   # Enable the X11 windowing system.
   # services.xserver.enable = true;
 
-
   nixpkgs.config.allowUnfree = true;
-
-  
 
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
@@ -85,15 +86,19 @@
   # services.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.art= {
+  users.users.art = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "input" "networkmanager"]; # Enable ‘sudo’ for the user.
+    extraGroups = [
+      "wheel"
+      "input"
+      "networkmanager"
+    ]; # Enable ‘sudo’ for the user.
     initialHashedPassword = "$y$j9T$c7f51JJaHDiv87VJ6mJsT0$VLEJ1EESj2uJOnYPl.5K4fjgRvFCcveisg6VrMmWmR3";
     shell = pkgs.zsh;
-  packages = with pkgs; [
-       tree
-       wpsoffice
-       vscode
+    packages = with pkgs; [
+      tree
+      wpsoffice
+      vscode
     ];
   };
 
@@ -116,10 +121,13 @@
     kitty
     git
     thunar
+    nixfmt
+    nix-ld
   ];
 
   programs.zsh.enable = true;
   programs.firefox.enable = true;
+  programs.nix-ld.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -165,4 +173,3 @@
   system.stateVersion = "26.05"; # Did you read the comment?
 
 }
-
