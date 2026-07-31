@@ -93,6 +93,7 @@
   packages = with pkgs; [
        tree
        wpsoffice
+       vscode
     ];
   };
 
