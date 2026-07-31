@@ -114,6 +114,7 @@
     nerd-fonts.jetbrains-mono
     kitty
     git
+    thunar
   ];
 
   programs.zsh.enable = true;
