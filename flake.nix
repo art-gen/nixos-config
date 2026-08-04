@@ -1,14 +1,10 @@
 {
-  description = "My First Flake";
-
+  description = "My first flake!";
   inputs = {
     nixpkgs.url = "nixpkgs/nixos-26.05";
-
     home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-
   };
-
   outputs =
     {
       self,
@@ -19,24 +15,22 @@
     let
       lib = nixpkgs.lib;
       system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = import nixpkgs {
+        inherit system;
+        config.allowUnfree = true;
+      };
     in
     {
       nixosConfigurations = {
         desktop = lib.nixosSystem {
-          inherit pkgs;
-          modules = [
-            ./configuration.nix
-            home-manager.nixosModules.home-manager
-          ];
+          inherit system;
+          modules = [ ./configuration.nix ];
         };
       };
       homeConfigurations = {
         art = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
-          modules = [
-            ./home.nix
-          ];
+          modules = [ ./home.nix ];
         };
       };
     };
